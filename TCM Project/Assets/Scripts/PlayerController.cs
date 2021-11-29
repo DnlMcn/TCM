@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     public float gravity;
     public float jumpHeight;
 
+    public event System.Action OnItemPickup;
+
     public Transform groundCheck;
     // Define a distância dos pés do jogador na qual o chão é detectado
     public float groundDistance = 0.4f;
@@ -47,5 +49,15 @@ public class PlayerController : MonoBehaviour
 
         // Movimenta o jogador com todas as implementações juntas
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider triggerCollider)
+    {
+        if (triggerCollider.CompareTag("Item"))
+        {
+            Destroy(triggerCollider.gameObject);
+            OnItemPickup?.Invoke();
+
+        }
     }
 }

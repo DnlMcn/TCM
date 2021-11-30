@@ -7,11 +7,18 @@ Colaboradores: Caio Thomé Cruz, Danilo Mancini Queiroz de Sousa, Diogo de Azeve
 Felix Hioki Ribeiro, Gustavo Gomes dos Santos, Lucas Yuji Kunihira Macedo e Maria Eduarda Santos de Lima
 
 Papéis principais:
+
 Caio: Documentação
+
 Danilo: Programação, animação
+
 Diogo: Programação
+
 Felix: Modelagem
-Gustavo: Direção
+
+Gustavo: Direção, História
+
 Lucas: Música
+
 Duda: Arte
 

@@ -7,7 +7,7 @@ public class ItemPickup : MonoBehaviour
     PlayerController player;
     public event System.Action OnItemPickup;
 
-    public bool HasItem; // Substituindo "Item" por 
+    public bool HasItem; // Substituindo "Item" pelo nome do item (e.g. HasGun, HasPhone, etc.)
 
     void Start()
     {

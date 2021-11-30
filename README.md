@@ -12,7 +12,7 @@ Caio: Documentação
 
 Danilo: Programação, animação
 
-Diogo: Programação
+Diogo: Modelagem e texturização
 
 Felix: Modelagem
 

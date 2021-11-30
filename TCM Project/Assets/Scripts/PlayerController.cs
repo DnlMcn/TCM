@@ -6,9 +6,17 @@ public class PlayerController : MonoBehaviour
 {
     public CharacterController controller;
 
+    // Velocidade de movimento base
     public float movementSpeed;
+    // Valor que multiplica a velocidade base ao correr
+    public float sprintScale;
+    // Força da gravidade
     public float gravity;
+    // Altura base do pulo
     public float jumpHeight;
+
+    bool sprint;
+    bool isSprinting;
 
     public event System.Action OnItemPickup;
 
@@ -41,6 +49,28 @@ public class PlayerController : MonoBehaviour
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+
+        }
+
+        // Implementação simples de um botão de corrida (adicionar estamina?)
+        if(Input.GetKey(KeyCode.LeftShift) && isGrounded)
+        {
+            sprint = true;
+
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded)
+        {
+            sprint = false;
+            isSprinting = false;
+            movementSpeed /= sprintScale;
+
+        }
+
+        if (sprint && !isSprinting)
+        {
+            movementSpeed *= sprintScale;
+            isSprinting = true;
 
         }
 

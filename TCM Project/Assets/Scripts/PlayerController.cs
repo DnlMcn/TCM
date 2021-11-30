@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+// Autor: DnlMcn
+
+public class Player : MonoBehaviour
 {
     public CharacterController controller;
 
@@ -14,6 +16,12 @@ public class PlayerController : MonoBehaviour
     public float gravity;
     // Altura desejada do pulo
     public float jumpHeight;
+    // Variáveis relacionando à estamina (em milisegundos);
+    public float maxStamina = 15000;
+    float currentStamina = 15000;
+    float staminaRecoverSpeed = 5000; // Idealmente, gostaria que esse fosse um valor que você pudesse definir em segundos, 
+    bool isExhausted;                 // que seria quantos segundos demora pra estamina preencher por completo.
+    
 
     // Indica se o jogador está tentando correr
     bool sprint;
@@ -38,7 +46,7 @@ public class PlayerController : MonoBehaviour
         // Reduz a velocidade vertical do jogador se ele encostar no chão
         if(isGrounded && velocity.y < 0)
         {
-            velocity.y = -1f;
+            velocity.y = -1f;            
         }
 
         // Movimento básico com WASD
@@ -46,8 +54,7 @@ public class PlayerController : MonoBehaviour
         {
             float x = Input.GetAxisRaw("Horizontal");
             float z = Input.GetAxisRaw("Vertical");
-            Vector3 movement = transform.right * x + transform.forward * z;
-            
+            Vector3 movement = transform.right * x + transform.forward * z;            
         }
         
         controller.Move(movement * movementSpeed * Time.deltaTime);
@@ -56,36 +63,57 @@ public class PlayerController : MonoBehaviour
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-
         }
 
-        // Implementação simples de um botão de corrida (adicionar estamina?)
+        // Implementação simples de um botão de corrida
         if(Input.GetKey(KeyCode.LeftShift) && isGrounded)
         {
             sprint = true;
-
+            currentStamina -= Time.deltaTime;         
         }
+        
+        if (currentStamina <= 0) 
+        {
+            isExhausted = true;
+            StopRunning();
+        }
+        
 
         if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded)
         {
-            sprint = false;
-            isSprinting = false;
-            movementSpeed /= sprintScale;
-
+            StopRunning();
         }
 
-        if (sprint && !isSprinting)
+        if (sprint && !isSprinting && !isExhausted)
         {
             movementSpeed *= sprintScale;
             isSprinting = true;
-
         }
+        
+        if (
 
         // Aqui o Time.deltaTime é multiplicado novamente devido à equação geral da gravidade
         velocity.y += gravity * Time.deltaTime;
 
         // Movimenta o jogador com todas as implementações juntas
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    void StaminaRecover()
+    {
+        while (currentStamina < maxStamina)
+        {
+            currentStamina += staminaRecoverSpeed * Time.deltaTime;
+        }        
+    }
+
+    void StopRunning()
+    {
+            sprint = false;
+            isSprinting = false;
+            movementSpeed /= sprintScale;
+            StaminaRecover()
+            
     }
 
     private void OnTriggerEnter(Collider triggerCollider)

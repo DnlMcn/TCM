@@ -12,10 +12,12 @@ public class PlayerController : MonoBehaviour
     public float sprintScale;
     // Força da gravidade
     public float gravity;
-    // Altura base do pulo
+    // Altura desejada do pulo
     public float jumpHeight;
 
+    // Indica se o jogador está tentando correr
     bool sprint;
+    // Verifica se o personagem já está correndo
     bool isSprinting;
 
     public event System.Action OnItemPickup;
@@ -33,16 +35,21 @@ public class PlayerController : MonoBehaviour
          // Verifica se o jogador está no chão
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        // Anula a velocidade do jogador se ele encostar no chão
+        // Reduz a velocidade vertical do jogador se ele encostar no chão
         if(isGrounded && velocity.y < 0)
         {
             velocity.y = -1f;
         }
 
         // Movimento básico com WASD
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-        Vector3 movement = transform.right * x + transform.forward * z;
+        if(isGrounded) // Faz com que o jogador só possa controlar a velocidade horizontal do personagem se ele estiver no chão
+        {
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
+            Vector3 movement = transform.right * x + transform.forward * z;
+            
+        }
+        
         controller.Move(movement * movementSpeed * Time.deltaTime);
 
         // Implementação simples de um pulo

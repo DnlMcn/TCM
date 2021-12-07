@@ -4,7 +4,7 @@ using UnityEngine;
 
 // Autor: DnlMcn
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public CharacterController controller;
 
@@ -17,10 +17,10 @@ public class Player : MonoBehaviour
     // Altura desejada do pulo
     public float jumpHeight;
     // Variáveis relacionando à estamina (em milisegundos);
-    public float maxStamina = 15000;
-    float currentStamina = 15000;
-    float staminaRecoverSpeed = 5000; // Idealmente, gostaria que esse fosse um valor que você pudesse definir em segundos, 
-    bool isExhausted;                 // que seria quantos segundos demora pra estamina preencher por completo.
+    public float maxStamina;
+    float currentStamina;
+    public float staminaRecoverSpeed; // Idealmente, gostaria que esse fosse um valor que você pudesse definir em segundos, 
+    bool isExhausted;                        // que seria quantos segundos demora pra estamina preencher por completo.
     
 
     // Indica se o jogador está tentando correr
@@ -36,61 +36,73 @@ public class Player : MonoBehaviour
     public LayerMask groundMask;
 
     Vector3 velocity;
+    Vector3 movement;
     bool isGrounded;
+
+    private void Start()
+    {
+        currentStamina = maxStamina;
+    }
 
     void Update()
     {
-         // Verifica se o jogador está no chão
+        // Pulo e gravidade
+
+        // Verifica se o jogador está no chão
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
+        // Implementação simples de pulo
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
         // Reduz a velocidade vertical do jogador se ele encostar no chão
-        if(isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -1f;            
         }
+
+
+        // Movimento e corrida
 
         // Movimento básico com WASD
         if(isGrounded) // Faz com que o jogador só possa controlar a velocidade horizontal do personagem se ele estiver no chão
         {
             float x = Input.GetAxisRaw("Horizontal");
             float z = Input.GetAxisRaw("Vertical");
-            Vector3 movement = transform.right * x + transform.forward * z;            
+            movement = transform.right * x + transform.forward * z;            
         }
-        
         controller.Move(movement * movementSpeed * Time.deltaTime);
 
-        // Implementação simples de um pulo
-        if(Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        // Implementação simples de um botão de corrida
+        // Detecta se o jogador está correndo
         if(Input.GetKey(KeyCode.LeftShift) && isGrounded)
         {
             sprint = true;
             currentStamina -= Time.deltaTime;         
         }
-        
-        if (currentStamina <= 0) 
-        {
-            isExhausted = true;
-            StopRunning();
-        }
-        
 
-        if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded)
-        {
-            StopRunning();
-        }
-
+        // Detecta se o jogador está iniciando uma corrida
         if (sprint && !isSprinting && !isExhausted)
         {
             movementSpeed *= sprintScale;
             isSprinting = true;
         }
+
+        // Detecta se a estamina do jogador acabou
+        if (currentStamina <= 0) 
+        {
+            Debug.Log("You are exhausted.");
+            isExhausted = true;
+            StopRunning();
+        }
         
-        if (
+        // Detecta se o jogador soltou a tecla de correr
+        if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded && isSprinting)
+        {
+            sprint = false;
+            StopRunning();
+        }
 
         // Aqui o Time.deltaTime é multiplicado novamente devido à equação geral da gravidade
         velocity.y += gravity * Time.deltaTime;
@@ -99,30 +111,38 @@ public class Player : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
+    // Calcula o gasto de estamina
+    void StaminaSpend()
+    {
+
+    }
+
+    // Gradualmente aumenta currentStamina desde a mesma seja menor que maxStamina
     void StaminaRecover()
     {
         while (currentStamina < maxStamina)
         {
             currentStamina += staminaRecoverSpeed * Time.deltaTime;
-        }        
+        }
+        isExhausted = false;
+        Debug.Log("Your stamina is fully recovered.");
     }
 
+    // Executa as funções necessárias para que o personagem pare de correr
     void StopRunning()
     {
-            sprint = false;
-            isSprinting = false;
             movementSpeed /= sprintScale;
-            StaminaRecover()
-            
+            StaminaRecover();
+            isSprinting = false;
     }
 
+    // Detecta colisões com itens
     private void OnTriggerEnter(Collider triggerCollider)
     {
         if (triggerCollider.CompareTag("Item"))
         {
             Destroy(triggerCollider.gameObject);
             OnItemPickup?.Invoke();
-
         }
     }
 }

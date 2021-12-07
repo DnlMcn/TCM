@@ -944,8 +944,8 @@ MonoBehaviour:
   sprintScale: 2
   gravity: -18
   jumpHeight: 2
-  maxStamina: 5
-  staminaRecoverSpeed: 0.005
+  maxStamina: 10
+  staminaRecoverSpeed: 2
   groundCheck: {fileID: 808817476}
   groundDistance: 0.4
   groundMask:

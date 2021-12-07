@@ -20,13 +20,13 @@ public class PlayerController : MonoBehaviour
     public float maxStamina;
     float currentStamina;
     public float staminaRecoverSpeed; // Idealmente, gostaria que esse fosse um valor que você pudesse definir em segundos, 
-    bool isExhausted;                        // que seria quantos segundos demora pra estamina preencher por completo.
+    bool isExhausted;                 // que seria quantos segundos demora pra estamina preencher por completo.
+    bool isRested; 
     
-
-    // Indica se o jogador está tentando correr
-    bool sprint;
-    // Verifica se o personagem já está correndo
+    // Verifica se o personagem está correndo
     bool isSprinting;
+    // Verifica se o jogador está tentando correr
+    bool sprint;
 
     public event System.Action OnItemPickup;
 
@@ -64,10 +64,10 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        // Movimento e corrida
+        // Movimento básico
 
         // Movimento básico com WASD
-        if(isGrounded) // Faz com que o jogador só possa controlar a velocidade horizontal do personagem se ele estiver no chão
+        if (isGrounded) // Faz com que o jogador só possa controlar a velocidade horizontal do personagem se ele estiver no chão
         {
             float x = Input.GetAxisRaw("Horizontal");
             float z = Input.GetAxisRaw("Vertical");
@@ -75,34 +75,21 @@ public class PlayerController : MonoBehaviour
         }
         controller.Move(movement * movementSpeed * Time.deltaTime);
 
-        // Detecta se o jogador está correndo
-        if(Input.GetKey(KeyCode.LeftShift) && isGrounded)
-        {
-            sprint = true;
-            currentStamina -= Time.deltaTime;         
-        }
 
-        // Detecta se o jogador está iniciando uma corrida
-        if (sprint && !isSprinting && !isExhausted)
-        {
-            movementSpeed *= sprintScale;
-            isSprinting = true;
-        }
+        // Corrida e estamina
 
-        // Detecta se a estamina do jogador acabou
-        if (currentStamina <= 0) 
-        {
-            Debug.Log("You are exhausted.");
-            isExhausted = true;
-            StopRunning();
-        }
+        if (!isExhausted && !isSprinting && Input.GetKey(KeyCode.LeftShift)) { Run(); }
+
+        if (isExhausted && isSprinting || !Input.GetKey(KeyCode.LeftShift) && isSprinting) { StopRunning(); }
+
+        if (!isSprinting && currentStamina < maxStamina) { RecoverStamina(); }
+
+        if (currentStamina <= 0) { isExhausted = true; Debug.Log("Você está exausto."); }
+
+        if (currentStamina >= maxStamina && !isRested) { isRested = true; Debug.Log("Você está descansado."); }
+
+        if (isSprinting && currentStamina > 0) { ConsumeStamina(); }
         
-        // Detecta se o jogador soltou a tecla de correr
-        if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded && isSprinting)
-        {
-            sprint = false;
-            StopRunning();
-        }
 
         // Aqui o Time.deltaTime é multiplicado novamente devido à equação geral da gravidade
         velocity.y += gravity * Time.deltaTime;
@@ -111,29 +98,27 @@ public class PlayerController : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
-    // Calcula o gasto de estamina
-    void StaminaSpend()
+    void Run()
     {
-
+        isSprinting = true; Debug.Log("Você está correndo.");
+        movementSpeed *= sprintScale;
     }
 
-    // Gradualmente aumenta currentStamina desde a mesma seja menor que maxStamina
-    void StaminaRecover()
-    {
-        while (currentStamina < maxStamina)
-        {
-            currentStamina += staminaRecoverSpeed * Time.deltaTime;
-        }
-        isExhausted = false;
-        Debug.Log("Your stamina is fully recovered.");
-    }
-
-    // Executa as funções necessárias para que o personagem pare de correr
     void StopRunning()
     {
-            movementSpeed /= sprintScale;
-            StaminaRecover();
-            isSprinting = false;
+        isSprinting = false; Debug.Log("Você parou de correr.");
+        movementSpeed /= sprintScale;
+    }
+
+    void ConsumeStamina()
+    {
+        currentStamina -= Time.deltaTime; Debug.Log("Sua estamina está sendo consumida.");
+    }
+
+    void RecoverStamina()
+    {
+        currentStamina += staminaRecoverSpeed * Time.deltaTime; Debug.Log("Sua estamina está sendo recuperada.");
+        if (currentStamina > maxStamina / 4 && isExhausted) { isExhausted = false; Debug.Log("Você não está mais exausto."); }
     }
 
     // Detecta colisões com itens

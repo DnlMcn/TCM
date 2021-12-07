@@ -4,125 +4,118 @@ using UnityEngine;
 
 // Autor: DnlMcn
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public CharacterController controller;
 
-    // Velocidade de movimento base
-    public float movementSpeed;
-    // Valor que multiplica a velocidade base ao correr
-    public float sprintScale;
-    // Força da gravidade
-    public float gravity;
-    // Altura desejada do pulo
-    public float jumpHeight;
-    // Variáveis relacionando à estamina (em milisegundos);
-    public float maxStamina = 15000;
-    float currentStamina = 15000;
-    float staminaRecoverSpeed = 5000; // Idealmente, gostaria que esse fosse um valor que você pudesse definir em segundos, 
-    bool isExhausted;                 // que seria quantos segundos demora pra estamina preencher por completo.
-    
+    public float movementSpeed; // Velocidade base do movimento
+    public float sprintScale; // Valor que multiplica a velocidade base ao correr 
+    public float gravity; // Força da gravidade
+    public float jumpHeight; // Altura do pulo 
 
-    // Indica se o jogador está tentando correr
-    bool sprint;
-    // Verifica se o personagem já está correndo
-    bool isSprinting;
+    // Variáveis relacionando à estamina (em segundos);
+    public float maxStamina; 
+    public float currentStamina;
+    public float staminaRecoverSpeed;
+    bool isExhausted;                
+    bool isRested; 
+   
+    bool isSprinting;// Verifica se o personagem está correndo
 
     public event System.Action OnItemPickup;
 
     public Transform groundCheck;
-    // Define a distância dos pés do jogador na qual o chão é detectado
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
 
     Vector3 velocity;
+    Vector3 movement;
     bool isGrounded;
+
+    private void Start()
+    {
+        currentStamina = maxStamina;
+    }
 
     void Update()
     {
-         // Verifica se o jogador está no chão
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        // Pulo e gravidade
+
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); // Verifica se o jogador está no chão
+
+        // Implementação simples de pulo
+        if (Input.GetButtonDown("Jump") && isGrounded && !isExhausted)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            currentStamina -= 2;
+        }
 
         // Reduz a velocidade vertical do jogador se ele encostar no chão
-        if(isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -1f;            
         }
 
+
+        // Movimento básico
+
         // Movimento básico com WASD
-        if(isGrounded) // Faz com que o jogador só possa controlar a velocidade horizontal do personagem se ele estiver no chão
+        if (isGrounded)
         {
             float x = Input.GetAxisRaw("Horizontal");
             float z = Input.GetAxisRaw("Vertical");
-            Vector3 movement = transform.right * x + transform.forward * z;            
+            movement = transform.right * x + transform.forward * z;            
         }
-        
         controller.Move(movement * movementSpeed * Time.deltaTime);
 
-        // Implementação simples de um pulo
-        if(Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
 
-        // Implementação simples de um botão de corrida
-        if(Input.GetKey(KeyCode.LeftShift) && isGrounded)
-        {
-            sprint = true;
-            currentStamina -= Time.deltaTime;         
-        }
-        
-        if (currentStamina <= 0) 
-        {
-            isExhausted = true;
-            StopRunning();
-        }
-        
+        // Corrida e estamina
 
-        if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded)
-        {
-            StopRunning();
-        }
+        if (isGrounded && !isExhausted && !isSprinting && Input.GetKey(KeyCode.LeftShift)) { Run(); }
+        if (isGrounded && isExhausted && isSprinting || !Input.GetKey(KeyCode.LeftShift) && isSprinting) { StopRunning(); }
 
-        if (sprint && !isSprinting && !isExhausted)
-        {
-            movementSpeed *= sprintScale;
-            isSprinting = true;
-        }
-        
-        if (
+        if (isGrounded && !isSprinting && currentStamina < maxStamina) { RecoverStamina(); }
+        if (isGrounded && isSprinting && currentStamina > 0) { ConsumeStamina(); }
 
-        // Aqui o Time.deltaTime é multiplicado novamente devido à equação geral da gravidade
+        if (currentStamina <= 0) { isExhausted = true; Debug.Log("Você está exausto."); }
+        if (currentStamina >= maxStamina && !isRested) { isRested = true; }
+                
+
         velocity.y += gravity * Time.deltaTime;
 
-        // Movimenta o jogador com todas as implementações juntas
         controller.Move(velocity * Time.deltaTime);
     }
 
-    void StaminaRecover()
+    void Run()
     {
-        while (currentStamina < maxStamina)
-        {
-            currentStamina += staminaRecoverSpeed * Time.deltaTime;
-        }        
+        isSprinting = true;
+        movementSpeed *= sprintScale;
     }
 
     void StopRunning()
     {
-            sprint = false;
-            isSprinting = false;
-            movementSpeed /= sprintScale;
-            StaminaRecover()
-            
+        isSprinting = false;
+        movementSpeed /= sprintScale;
     }
 
+    void ConsumeStamina()
+    {
+        currentStamina -= Time.deltaTime;
+    }
+
+    void RecoverStamina()
+    {
+        currentStamina += staminaRecoverSpeed * Time.deltaTime;
+        if (currentStamina > maxStamina / 3 && isExhausted) { isExhausted = false; Debug.Log("Você não está mais exausto."); }
+    }
+
+    // Detecta colisões com itens
     private void OnTriggerEnter(Collider triggerCollider)
     {
         if (triggerCollider.CompareTag("Item"))
         {
             Destroy(triggerCollider.gameObject);
             OnItemPickup?.Invoke();
-
         }
     }
 }

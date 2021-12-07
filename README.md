@@ -7,6 +7,7 @@ Colaboradores: Caio Thomé Cruz, Danilo Mancini Queiroz de Sousa, Diogo de Azeve
 Felix Hioki Ribeiro, Gustavo Gomes dos Santos, Lucas Yuji Kunihira Macedo e Maria Eduarda Santos de Lima
 
 **Papéis principais**
+
 Caio (CaioThomeCruz): Documentação
 
 Danilo (DnlMcn): Programação, animação

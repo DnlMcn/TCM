@@ -6,19 +6,18 @@ Sob orientação dos professores: Aline Firmino Brito, Luiz Henrique de Almeida 
 Colaboradores: Caio Thomé Cruz, Danilo Mancini Queiroz de Sousa, Diogo de Azevedo Alonso,
 Felix Hioki Ribeiro, Gustavo Gomes dos Santos, Lucas Yuji Kunihira Macedo e Maria Eduarda Santos de Lima
 
-Papéis principais:
+**Papéis principais**
+Caio (CaioThomeCruz): Documentação
 
-Caio: Documentação
+Danilo (DnlMcn): Programação, animação
 
-Danilo: Programação, animação
+Diogo (deogos): Modelagem e texturização
 
-Diogo: Modelagem e texturização
+Felix (bugaluBR): Modelagem
 
-Felix: Modelagem
+Gustavo (hypers-goose): Direção, História
 
-Gustavo: Direção, História
+Lucas (lykm2604): Música
 
-Lucas: Música
-
-Duda: Arte
+Maria Eduarda (marystos): Arte
 

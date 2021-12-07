@@ -44,9 +44,10 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); // Verifica se o jogador está no chão
 
         // Implementação simples de pulo
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded && !isExhausted)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            currentStamina -= 2;
         }
 
         // Reduz a velocidade vertical do jogador se ele encostar no chão
@@ -70,18 +71,15 @@ public class PlayerController : MonoBehaviour
 
         // Corrida e estamina
 
-        if (!isExhausted && !isSprinting && Input.GetKey(KeyCode.LeftShift)) { Run(); }
+        if (isGrounded && !isExhausted && !isSprinting && Input.GetKey(KeyCode.LeftShift)) { Run(); }
+        if (isGrounded && isExhausted && isSprinting || !Input.GetKey(KeyCode.LeftShift) && isSprinting) { StopRunning(); }
 
-        if (isExhausted && isSprinting || !Input.GetKey(KeyCode.LeftShift) && isSprinting) { StopRunning(); }
-
-        if (!isSprinting && currentStamina < maxStamina) { RecoverStamina(); }
+        if (isGrounded && !isSprinting && currentStamina < maxStamina) { RecoverStamina(); }
+        if (isGrounded && isSprinting && currentStamina > 0) { ConsumeStamina(); }
 
         if (currentStamina <= 0) { isExhausted = true; Debug.Log("Você está exausto."); }
-
-        if (currentStamina >= maxStamina && !isRested) { isRested = true; Debug.Log("Você está descansado."); }
-
-        if (isSprinting && currentStamina > 0) { ConsumeStamina(); }
-        
+        if (currentStamina >= maxStamina && !isRested) { isRested = true; }
+                
 
         velocity.y += gravity * Time.deltaTime;
 
@@ -90,25 +88,25 @@ public class PlayerController : MonoBehaviour
 
     void Run()
     {
-        isSprinting = true; Debug.Log("Você está correndo.");
+        isSprinting = true;
         movementSpeed *= sprintScale;
     }
 
     void StopRunning()
     {
-        isSprinting = false; Debug.Log("Você parou de correr.");
+        isSprinting = false;
         movementSpeed /= sprintScale;
     }
 
     void ConsumeStamina()
     {
-        currentStamina -= Time.deltaTime; Debug.Log("Sua estamina está sendo consumida.");
+        currentStamina -= Time.deltaTime;
     }
 
     void RecoverStamina()
     {
-        currentStamina += staminaRecoverSpeed * Time.deltaTime; Debug.Log("Sua estamina está sendo recuperada.");
-        if (currentStamina > maxStamina / 4 && isExhausted) { isExhausted = false; Debug.Log("Você não está mais exausto."); }
+        currentStamina += staminaRecoverSpeed * Time.deltaTime;
+        if (currentStamina > maxStamina / 3 && isExhausted) { isExhausted = false; Debug.Log("Você não está mais exausto."); }
     }
 
     // Detecta colisões com itens

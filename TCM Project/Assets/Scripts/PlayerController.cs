@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
         {
             float x = Input.GetAxisRaw("Horizontal");
             float z = Input.GetAxisRaw("Vertical");
-            movement = transform.right * x + transform.forward * z;            
+            movement = transform.right * x + transform.forward * z;
         }
         controller.Move(movement * movementSpeed * Time.deltaTime);
 

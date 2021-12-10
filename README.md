@@ -10,9 +10,9 @@ Felix Hioki Ribeiro, Gustavo Gomes dos Santos, Lucas Yuji Kunihira Macedo e Mari
 
 Caio (CaioThomeCruz): Documentação
 
-Danilo (DnlMcn): Programação, animação
+Danilo (DnlMcn): Programação, assistência geral
 
-Diogo (deogos): Modelagem e texturização
+Diogo (deogos): Texturização e astética
 
 Felix (bugaluBR): Modelagem
 

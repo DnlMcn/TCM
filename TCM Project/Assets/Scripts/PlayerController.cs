@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     public float maxStamina; 
     public float currentStamina;
     public float staminaRecoverSpeed;
+    float jumpStaminaCost;
     bool isExhausted;                
     bool isRested; 
    
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         currentStamina = maxStamina;
+        jumpStaminaCost = maxStamina / (staminaRecoverSpeed * 3);
     }
 
     void Update()
@@ -47,7 +49,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded && !isExhausted)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            currentStamina -= 2;
+            currentStamina -= jumpStaminaCost;
         }
 
         // Reduz a velocidade vertical do jogador se ele encostar no chão

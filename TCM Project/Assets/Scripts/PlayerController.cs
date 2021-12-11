@@ -14,13 +14,13 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight; // Altura do pulo 
 
     // Variáveis relacionando à estamina (em segundos);
-    public float maxStamina; 
+    public float maxStamina;
     public float currentStamina;
     public float staminaRecoverSpeed;
     float jumpStaminaCost;
-    bool isExhausted;                
-    bool isRested; 
-   
+    bool isExhausted;
+    bool isRested;
+
     bool isSprinting;// Verifica se o personagem está correndo
 
     public event System.Action OnItemPickup;
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         // Reduz a velocidade vertical do jogador se ele encostar no chão
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -1f;            
+            velocity.y = -1f;
         }
 
 
@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
         if (currentStamina <= 0) { isExhausted = true; Debug.Log("Você está exausto."); }
         if (currentStamina >= maxStamina && !isRested) { isRested = true; }
-                
+
 
         velocity.y += gravity * Time.deltaTime;
 
@@ -111,13 +111,16 @@ public class PlayerController : MonoBehaviour
         if (currentStamina > maxStamina / 3 && isExhausted) { isExhausted = false; Debug.Log("Você não está mais exausto."); }
     }
 
-    // Detecta colisões com itens
     private void OnTriggerEnter(Collider triggerCollider)
     {
         if (triggerCollider.CompareTag("Item"))
         {
             Destroy(triggerCollider.gameObject);
             OnItemPickup?.Invoke();
+        }
+        if (triggerCollider.CompareTag("CabinPathBarrier"))
+        {
+            Debug.Log("Eu deveria seguir a trilha...");
         }
     }
 }

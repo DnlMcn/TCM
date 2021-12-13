@@ -9,7 +9,7 @@ public class StaminaBar : MonoBehaviour
 
     private float maxStamina;
     private float stamina;
-    private bool isEnabled;
+    private bool isEnabled = false;
 
     void Start()
     {

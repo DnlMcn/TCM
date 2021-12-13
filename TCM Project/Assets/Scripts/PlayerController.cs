@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     bool isSprinting;// Verifica se o personagem está correndo
 
     public event System.Action OnItemPickup;
+    public event System.Action OnSubtitleTrigger;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -110,6 +111,7 @@ public class PlayerController : MonoBehaviour
         currentStamina += staminaRecoverSpeed * Time.deltaTime;
         if (currentStamina > maxStamina / 3 && isExhausted) { isExhausted = false; Debug.Log("Você não está mais exausto."); }
     }
+
 
     private void OnTriggerEnter(Collider triggerCollider)
     {

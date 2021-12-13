@@ -21,8 +21,5 @@ public class ItemPickup : MonoBehaviour
     {
         HasItem = true;
         Debug.Log("Item was picked up.");
-
     }
-
-
 }

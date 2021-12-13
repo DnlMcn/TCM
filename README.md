@@ -1,24 +1,21 @@
-# TCM 
+# TCM
 
 Projeto do curso de Desenvolvimento de Jogos Digitais feito em Unity (ver. 2020.3.18f1 Personal)
 Sob orientação dos professores: Aline Firmino Brito, Luiz Henrique de Almeida Fernandes, Nívia Maria Domingues e Wellington Cidade Silva
 
 Colaboradores: Caio Thomé Cruz, Danilo Mancini Queiroz de Sousa, Diogo de Azevedo Alonso,
-Felix Hioki Ribeiro, Gustavo Gomes dos Santos, Lucas Yuji Kunihira Macedo e Maria Eduarda Santos de Lima
+Felix Hioki Ribeiro, Gustavo Gomes dos Santos e Maria Eduarda Santos de Lima
 
 **Papéis principais**
 
 Caio (CaioThomeCruz): Documentação
 
-Danilo (DnlMcn): Programação, assistência geral
+Danilo (DnlMcn): Programação, assistência geral e level design
 
-Diogo (deogos): Texturização e astética
+Diogo (deogos): Texturização e assistência geral
 
-Felix (bugaluBR): Modelagem
+Felix (bugaluBR): Modelagem e Efeitos Sonoros
 
 Gustavo (hypers-goose): Direção, História
 
-Lucas (lykm2604): Música
-
-Maria Eduarda (marystos): Arte
-
+Maria Eduarda (marystos): Arte e site

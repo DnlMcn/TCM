@@ -8,6 +8,8 @@ public class StaminaBar : MonoBehaviour
     public Slider staminaBar;
 
     private float maxStamina;
+    private float stamina;
+    private bool isEnabled;
 
     void Start()
     {
@@ -17,9 +19,12 @@ public class StaminaBar : MonoBehaviour
         staminaBar.value = maxStamina;
     }
 
-    void Update()
+    private void Update()
     {
-        staminaBar.value = GameObject.Find("PlayerObject").GetComponent<PlayerController>().currentStamina; ;
-    }
+        staminaBar.value = GameObject.Find("PlayerObject").GetComponent<PlayerController>().currentStamina;
+        stamina = staminaBar.value;
 
+        if (stamina >= maxStamina && isEnabled) { staminaBar.gameObject.SetActive(false); isEnabled = false; }
+        else if (stamina < maxStamina && !isEnabled) { staminaBar.gameObject.SetActive(true); isEnabled = true; }
+    }
 }

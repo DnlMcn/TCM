@@ -9,11 +9,12 @@ public class StaminaBar : MonoBehaviour
 
     private float maxStamina;
     private float stamina;
-    private bool isEnabled = false;
+    bool isEnabled;
 
     void Start()
     {
         maxStamina = GameObject.Find("PlayerObject").GetComponent<PlayerController>().maxStamina;
+        staminaBar.gameObject.SetActive(false);
 
         staminaBar.maxValue = maxStamina;
         staminaBar.value = maxStamina;

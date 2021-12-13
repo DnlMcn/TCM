@@ -9,9 +9,10 @@ public class PlayerController : MonoBehaviour
     public CharacterController controller;
 
     public float movementSpeed; // Velocidade base do movimento
+    public bool canRun; // Muda se o jogador é permitido correr
     public float sprintScale; // Valor que multiplica a velocidade base ao correr 
     public float gravity; // Força da gravidade
-    public float jumpHeight; // Altura do pulo 
+    public float jumpHeight; // Altura do pulo
 
     // Variáveis relacionando à estamina (em segundos);
     public float maxStamina;
@@ -74,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
         // Corrida e estamina
 
-        if (isGrounded && !isExhausted && !isSprinting && Input.GetKey(KeyCode.LeftShift)) { Run(); }
+        if (canRun && isGrounded && !isExhausted && !isSprinting && Input.GetKey(KeyCode.LeftShift)) { Run(); }
         if (isGrounded && isExhausted && isSprinting || !Input.GetKey(KeyCode.LeftShift) && isSprinting) { StopRunning(); }
 
         if (isGrounded && !isSprinting && currentStamina < maxStamina) { RecoverStamina(); }

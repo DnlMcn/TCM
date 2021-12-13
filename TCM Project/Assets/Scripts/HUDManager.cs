@@ -14,6 +14,8 @@ public class HUDManager : MonoBehaviour
     public GameObject subtitles;
     private TextMesh subtitlesText;
 
+    public GameObject flashlightTutorial;
+
 
     void Start()
     {
@@ -26,7 +28,10 @@ public class HUDManager : MonoBehaviour
     void Update()
     {
         if (introVideo.isPaused) { introVideo.enabled = false; } // Desativa o vídeo introdutório assim que ele termina
+
+        if (Input.GetKeyDown(KeyCode.F)) { flashlightTutorial.gameObject.SetActive(false); }
     }
+
     public void PlayerSubtitle(int lineSelect)
     {
 
